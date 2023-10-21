@@ -6,6 +6,10 @@ export const Filter = ({ filter, results, onChange }) => {
     onChange(name, value);
   };
 
+  let filterInfo = '';
+  if (!results && !filter) filterInfo = <p>Your contact list is empty</p>;
+  if (!results && filter) filterInfo = <p>Not Finded</p>;
+
   return (
     <>
       <label htmlFor="filter">Find contacts by name</label>
@@ -17,7 +21,7 @@ export const Filter = ({ filter, results, onChange }) => {
         onChange={handleChange}
         required
       />
-      {!results && <p>Not Finded</p>}
+      {filterInfo}
     </>
   );
 };
