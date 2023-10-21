@@ -18,4 +18,12 @@ export const Button = styled.button`
   background-color: transparent;
   border-color: #f1f1f1;
   border-radius: 4px;
+
+  transition: color 250ms linear, background-color 250ms linear;
+
+  &:hover,
+  &:focus {
+    background-color: blue;
+    color: white;
+  }
 `;
