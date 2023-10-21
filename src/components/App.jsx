@@ -1,12 +1,12 @@
 import { Component } from 'react';
+import { nanoid } from 'nanoid';
 
 import { ContactForm } from './ContactForm/ContactForm';
+import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 
 import { GlobalStyle } from './GlobalStyle';
 import { AppWrapper } from './App.styled';
-import { nanoid } from 'nanoid';
-import { Filter } from './Filter/Filter';
 
 export class App extends Component {
   state = {
@@ -39,7 +39,6 @@ export class App extends Component {
   };
 
   deleteContact = id => {
-    console.log(id);
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
