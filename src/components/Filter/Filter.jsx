@@ -1,6 +1,6 @@
 import { Input } from './Filter.styled';
 
-export const Filter = ({ filter, onChange }) => {
+export const Filter = ({ filter, results, onChange }) => {
   const handleChange = e => {
     const { name, value } = e.target;
     onChange(name, value);
@@ -17,6 +17,7 @@ export const Filter = ({ filter, onChange }) => {
         onChange={handleChange}
         required
       />
+      {!results && <p>Not Finded</p>}
     </>
   );
 };
