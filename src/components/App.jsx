@@ -24,9 +24,11 @@ export class App extends Component {
   };
 
   addContact = data => {
+    const formattedName = data.name.toLowerCase();
     const isAlreadyAdded = this.state.contacts.some(
-      ({ name }) => name === data.name
+      ({ name }) => name.toLowerCase() === formattedName
     );
+
     if (isAlreadyAdded) {
       alert(`${data.name} is already in contacts.`);
       return isAlreadyAdded;
@@ -57,6 +59,11 @@ export class App extends Component {
     const { filter } = this.state;
     const filteredContacts = this.filterContacts();
 
+    const results = filteredContacts.length;
+    let filterInfo = '';
+    if (!results && !filter) filterInfo = <p>Your contact list is empty</p>;
+    if (!results && filter) filterInfo = <p>Not Finded</p>;
+
     return (
       <AppWrapper>
         <GlobalStyle />
@@ -67,7 +74,7 @@ export class App extends Component {
         <h2>Contacts</h2>
         <Filter
           filter={filter}
-          results={filteredContacts.length}
+          filterInfo={filterInfo}
           onChange={this.updateState}
         />
         <ContactList contacts={filteredContacts} onClick={this.deleteContact} />
