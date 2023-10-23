@@ -1,56 +1,42 @@
-import { Component } from 'react';
-import { Button, Form, Input, Label } from './ContactForm.styled';
+import { ErrorMessage, Formik } from 'formik';
+import { object, string } from 'yup';
 
-const INITIAL_STATE = { name: '', number: '' };
+import { AddContactForm, Button, Input, Label } from './ContactForm.styled';
 
-export class ContactForm extends Component {
-  state = { ...INITIAL_STATE };
+const initialValues = { name: '', number: '' };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
+const nameRegex =
+  /^[a-zA-Zа-яА-Я]+(([' \\-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/;
+const numberRegex =
+  /\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}/;
+const schema = object({
+  name: string().matches(nameRegex).required(),
+  number: string().matches(numberRegex).required(),
+});
+
+export const ContactForm = ({ onSubmit }) => {
+  const handleSubmit = (values, actions) => {
+    const isAlreadyAdded = onSubmit(values);
+    if (!isAlreadyAdded) actions.resetForm();
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
+  return (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={schema}
+    >
+      <AddContactForm>
+        <Label htmlFor="name">Name</Label>
+        <Input type="text" id="name" name="name" />
+        <ErrorMessage component="span" name="name" />
 
-    const isAlreadyAdded = this.props.onSubmit(this.state);
-    if (!isAlreadyAdded) this.reset();
-  };
+        <Label htmlFor="number">Number</Label>
+        <Input type="tel" id="number" name="number" />
+        <ErrorMessage component="p" name="number" />
 
-  reset = () => {
-    this.setState({ ...INITIAL_STATE });
-  };
-
-  render() {
-    const { name, number } = this.state;
-
-    return (
-      <>
-        <Form onSubmit={this.handleSubmit}>
-          <Label htmlFor="name">Name</Label>
-          <Input
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={this.handleChange}
-            required
-          />
-
-          <Label htmlFor="number">Number</Label>
-          <Input
-            type="tel"
-            id="number"
-            name="number"
-            value={number}
-            onChange={this.handleChange}
-            required
-          />
-
-          <Button type="submit">Add contact</Button>
-        </Form>
-      </>
-    );
-  }
-}
+        <Button type="submit">Add contact</Button>
+      </AddContactForm>
+    </Formik>
+  );
+};

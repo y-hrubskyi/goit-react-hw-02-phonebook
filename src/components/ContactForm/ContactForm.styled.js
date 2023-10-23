@@ -1,10 +1,11 @@
+import { Field, Form } from 'formik';
 import styled from 'styled-components';
 
 export const Title = styled.h2`
   margin-bottom: 20px;
 `;
 
-export const Form = styled.form`
+export const AddContactForm = styled(Form)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -19,7 +20,7 @@ export const Label = styled.label`
   margin-bottom: 8px;
 `;
 
-export const Input = styled.input`
+export const Input = styled(Field)`
   margin-bottom: 16px;
 
   border-radius: 4px;
