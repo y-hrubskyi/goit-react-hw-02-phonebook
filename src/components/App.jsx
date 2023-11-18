@@ -1,49 +1,54 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
+import toast, { Toaster } from 'react-hot-toast';
 
-import { ContactForm } from './ContactForm/ContactForm';
-import { Filter } from './Filter/Filter';
-import { ContactList } from './ContactList/ContactList';
+import { ContactForm } from 'components/ContactForm/ContactForm';
+import { Filter } from 'components/Filter/Filter';
+import { ContactList } from 'components/ContactList/ContactList';
 
 import { GlobalStyle } from './GlobalStyle';
-import { AppWrapper } from './App.styled';
+import { Layout, PageTitle, Title } from './App.styled';
+
+const initialContacts = [
+  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+];
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: initialContacts,
     filter: '',
   };
 
-  updateState = (option, value) => {
-    this.setState({ [option]: value });
+  updateFilter = value => {
+    this.setState({ filter: value });
   };
 
-  addContact = data => {
-    const formattedName = data.name.toLowerCase();
-    const isAlreadyAdded = this.state.contacts.some(
+  addContact = contact => {
+    const formattedName = contact.name.toLowerCase();
+    const isExist = this.state.contacts.some(
       ({ name }) => name.toLowerCase() === formattedName
     );
 
-    if (isAlreadyAdded) {
-      alert(`${data.name} is already in contacts.`);
-      return isAlreadyAdded;
+    if (isExist) {
+      toast.error(`${contact.name} is already in contacts.`);
+      return isExist;
     }
 
-    const newContact = { ...data, id: nanoid() };
+    const newContact = { ...contact, id: nanoid() };
     this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
     }));
+    toast.success('Contact successfully added');
   };
 
-  deleteContact = id => {
+  deleteContact = contactId => {
     this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== id),
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
+    toast.success('Contact successfully deleted');
   };
 
   filterContacts = () => {
@@ -65,20 +70,24 @@ export class App extends Component {
     if (!results && filter) filterInfo = <p>Not Finded</p>;
 
     return (
-      <AppWrapper>
+      <Layout>
         <GlobalStyle />
+        <Toaster toastOptions={{ duration: 1500 }} />
 
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.addContact} />
+        <PageTitle>Phonebook</PageTitle>
+        <ContactForm onAdd={this.addContact} />
 
-        <h2>Contacts</h2>
+        <Title>Contacts</Title>
         <Filter
           filter={filter}
           filterInfo={filterInfo}
-          onChange={this.updateState}
+          onUpdate={this.updateFilter}
         />
-        <ContactList contacts={filteredContacts} onClick={this.deleteContact} />
-      </AppWrapper>
+        <ContactList
+          contacts={filteredContacts}
+          onDelete={this.deleteContact}
+        />
+      </Layout>
     );
   }
 }
