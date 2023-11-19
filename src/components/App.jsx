@@ -9,16 +9,9 @@ import { ContactList } from 'components/ContactList/ContactList';
 import { GlobalStyle } from './GlobalStyle';
 import { Layout, PageTitle, Title } from './App.styled';
 
-const initialContacts = [
-  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-];
-
 export class App extends Component {
   state = {
-    contacts: initialContacts,
+    contacts: [],
     filter: '',
   };
 
@@ -61,10 +54,11 @@ export class App extends Component {
   };
 
   render() {
-    const { filter } = this.state;
-    const filteredContacts = this.filterContacts();
+    const { contacts, filter } = this.state;
 
+    const filteredContacts = this.filterContacts();
     const results = filteredContacts.length;
+
     let filterInfo = '';
     if (!results && !filter) filterInfo = <p>Your contact list is empty</p>;
     if (!results && filter) filterInfo = <p>Not Finded</p>;
@@ -78,15 +72,17 @@ export class App extends Component {
         <ContactForm onAdd={this.addContact} />
 
         <Title>Contacts</Title>
-        <Filter
-          filter={filter}
-          filterInfo={filterInfo}
-          onUpdate={this.updateFilter}
-        />
-        <ContactList
-          contacts={filteredContacts}
-          onDelete={this.deleteContact}
-        />
+        {contacts.length > 0 && (
+          <Filter filter={filter} onUpdate={this.updateFilter} />
+        )}
+        {filteredContacts.length ? (
+          <ContactList
+            contacts={filteredContacts}
+            onDelete={this.deleteContact}
+          />
+        ) : (
+          filterInfo
+        )}
       </Layout>
     );
   }
